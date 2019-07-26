@@ -28,7 +28,7 @@ class login
             users.supervise2=Element.sup2
         })
         console.log(users.id)
-        var subordinate=JSON.parse(await connection.connect("select HREMP_NAME,HREMP_EMPCODE,HREMP_EMPID,HREMP_TITLE,HREMP_SUVISOR1,HREMP_SUVISOR2 from HREMP where HREMP_SUVISOR1='"+users.id+"'"))
+        var subordinate=JSON.parse(await connection.connect("select HREMP_NAME,HREMP_EMPCODE,HREMP_EMPID,HREMP_TITLE,HREMP_SUVISOR1,HREMP_SUVISOR2 from HREMP where HREMP_SUVISOR1='"+users.id+"' or HREMP_SUVISOR2='"+users.id+"'"))
         users.subordinate=JSON.stringify(subordinate)
         return users
     }
@@ -55,7 +55,7 @@ class login
                 
                 emp_code=Element.HREMP_EMPCODE
             })
-            var subordinate=JSON.parse(await connection.connect("select HREMP_NAME,HREMP_EMPCODE,HREMP_EMPID,HREMP_TITLE,HREMP_SUVISOR1,HREMP_SUVISOR2 from HREMP where HREMP_SUVISOR1='"+emp_id+"'"))
+            var subordinate=JSON.parse(await connection.connect("select HREMP_NAME,HREMP_EMPCODE,HREMP_EMPID,HREMP_TITLE,HREMP_SUVISOR1,HREMP_SUVISOR2 from HREMP where HREMP_SUVISOR1='"+emp_id+"' or HREMP_SUVISOR2='"+emp_id+"'"))
             
                 subordinate.forEach(Element=>{
                     subs.push(new login(Element.HREMP_EMPID,Element.HREMP_EMPCODE,Element.HREMP_TITLE,Element.HREMP_SUVISOR1,Element.HREMP_SUVISOR2,Element.HREMP_NAME))

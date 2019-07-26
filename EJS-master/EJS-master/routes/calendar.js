@@ -41,6 +41,7 @@ router.get("/subo",async (req,res)=>
         result.forEach(result=>{
             if(result.length>0)
                 ar.push(result)
+           
         })
         console.log(ar)
         res.send(ar)

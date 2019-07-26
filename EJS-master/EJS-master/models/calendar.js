@@ -18,7 +18,7 @@ class calendar{
         console.log(cal)
         if(cal != "")
             JSON.parse(cal).forEach(element => {
-                arr.push(new calendar(element.ATWKCALDEMP_UUID,element.ATWKCALDEMP_EMPID,new Date(element.ATWKCALDEMP_WKYEAR,element.ATWKCALDEMP_WKMONTH,element.ATWKCALDEMP_WKDAY),element.ATWKCALDEMP_SHIFTCODE,element.ATWKCALDEMP_WORKTYPE))
+                arr.push(new calendar(element.ATWKCALDEMP_UUID,element.ATWKCALDEMP_EMPID,new Date(element.ATWKCALDEMP_WKYEAR,element.ATWKCALDEMP_WKMONTH-1,element.ATWKCALDEMP_WKDAY+1),element.ATWKCALDEMP_SHIFTCODE,element.ATWKCALDEMP_WORKTYPE))
             });
         else
             return
