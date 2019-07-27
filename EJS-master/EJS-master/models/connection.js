@@ -12,6 +12,18 @@ const db_config = {
 }
 class connection
 {
+    async procedure(paramter)
+    {
+        await sql.ConnectionPool(db_config)
+        var request = new sql.Request();
+        request.input('input_parameter', sql.Int, 10);
+        request.output('output_parameter', sql.VarChar(50));
+        request.execute('procedure_name', function(err, recordsets, returnValue) {
+            // ... error checks
+
+            console.dir(recordsets);
+    });
+    }
 
     async connect(query) {
         console.log(query)
