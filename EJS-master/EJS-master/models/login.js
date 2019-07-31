@@ -1,5 +1,32 @@
 var connection=require("./connection")
+const bcrypt = require('bcrypt');
+const NodeRSA = require('node-rsa');
+const key = new NodeRSA({b: 512});
 
+var generate_password= function(pass)
+{
+    return bcrypt.hashSync(pass,bcrypt.genSaltSync(9))
+}
+var validate_password=function(pass,hash)
+{
+    return bcrypt.compareSync(pass,hash)
+}
+var crypto = require('crypto'),
+    algorithm = 'aes-256-ctr',
+    password = 'd6F3Efeq';
+
+function encrypt(text){
+    var cipher = crypto.createCipher(algorithm,password)
+    var crypted = cipher.update(text,'utf8','hex')
+    crypted += cipher.final('hex');
+    return crypted;
+    }  
+function decrypt(text){
+    var decipher = crypto.createDecipher(algorithm,password)
+    var dec = decipher.update(text,'hex','utf8')
+    dec += decipher.final('utf8');
+    return dec;
+    }
 class login
 {
  
@@ -18,10 +45,10 @@ class login
     async get_user(id)
     {
         var users=new login()
-        var get="select * from tbl_login where emp_code='"+id+"'"
+        var get="select * from tbl_login where emp_id='"+id+"'"
         var user=JSON.parse(await connection.connect(get))
         user.forEach(Element=>{
-            users.code=id
+            users.code=Element.emp_code
             users.id=Element.emp_id
             users.role=Element.title
             users.supervise1=Element.sup1
@@ -34,7 +61,9 @@ class login
     }
     async login(id,password)
     {
-      var arr=[]
+    
+
+        var arr=[]
         var session;
         var id_except=JSON.parse(await connection.connect("select HREMP_EMPID,HREMP_NAME,HREMP_EMPCODE,HREMP_TITLE,HREMP_SUVISOR1,HREMP_SUVISOR2 from HREMP where HREMP_EMPCODE='"+id+"'"))
         
@@ -46,7 +75,7 @@ class login
             })
             var subs=[]
             var id_login=JSON.parse(await connection.connect("select * from tbl_login where emp_id='"+emp_id+"'"))
-            arr.push(id_login)
+            arr=id_login
             id_except.forEach(Element=>{
                 name=Element.HREMP_NAME
                 sup1=Element.HREMP_SUVISOR1
@@ -65,24 +94,26 @@ class login
             console.log(id_login)
             if(id_login=="")
             {
-                console.log("insert into tbl_login(emp_id,emp_code,password,title,sup1,sup2) values('"+emp_id+"','"+emp_code+"','"+password+"','"+title+"','"+sup1+"','"+sup2+"')")
-                connection.connect("insert into tbl_login(emp_id,emp_code,password,title,sup1,sup2) values('"+emp_id+"','"+emp_code+"','"+password+"','"+title+"','"+sup1+"','"+sup2+"')")
-                session=new login(id,emp_code,title,sup1,sup2,name,JSON.stringify(subs),"You have sucessfully registered",true)
-                console.log(session)
+                var pass=encrypt(password)
+                console.log(pass)
+                await connection.connect("SET ansi_warnings OFF insert into tbl_login(emp_id,emp_code,password,title,sup1,sup2) values('"+emp_id+"','"+emp_code+"','"+pass+"','"+title+"','"+sup1+"','"+sup2+"')")
+                session=new login(emp_id,emp_code,title,sup1,sup2,name,JSON.stringify(subs),"You have sucessfully registered",true)
+            
             }
             else
             {
-                arr.forEach(Element=>{
-                    console.log(Element)
-                    if(Element[0].password==password)
-                        session=new login(id,emp_code,title,sup1,sup2,name,JSON.stringify(subs),"Success",true)
-                    else
-                    {
-                        console.log("You have enterned wrong password")
-                        session=new login("","","","","","",[],"you have entered wrong password",false)
-                      
-                     }
-                })
+                if(password==decrypt(arr[0].password))
+                {
+                    console.log("Correct password")
+                    session=new login(emp_id,emp_code,title,sup1,sup2,name,JSON.stringify(subs),"Success",true)
+                }
+                else
+                {
+                    console.log("You have enterned wrong password")
+                    session=new login("","","","","","",[],"you have entered wrong password",false)
+                    
+                    }
+               
             }
         }
         else

@@ -5,6 +5,7 @@ var router=express.Router()
 const passport = require('passport');
 var jwt = require('jwt-simple');
 var secret="very secret"
+var bcrypt=require("bcrypt")
 // parse application/x-www-form-urlencoded
 router.use(bodyParser.urlencoded({ extended: false }))
 
@@ -13,8 +14,8 @@ router.post('/',async function(req,res,next){
     var id=req.body.id
     var password=req.body.password
     console.log(req.body)
+   
     var hello=await login.login(id,password)
-    console.log(hello)
     //check subordinate or superviser
     try{
         
@@ -23,7 +24,7 @@ router.post('/',async function(req,res,next){
                     console.log(element)
                 })
                 req.login(hello.id,function(err){
-                    console.log(hello.status)
+                
                     if(err)
                         res.redirect("/login?valid="+hello.status)
                     else
