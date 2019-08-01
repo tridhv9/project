@@ -2,18 +2,9 @@ var connection=require("./connection")
 const bcrypt = require('bcrypt');
 const NodeRSA = require('node-rsa');
 const key = new NodeRSA({b: 512});
-
-var generate_password= function(pass)
-{
-    return bcrypt.hashSync(pass,bcrypt.genSaltSync(9))
-}
-var validate_password=function(pass,hash)
-{
-    return bcrypt.compareSync(pass,hash)
-}
 var crypto = require('crypto'),
     algorithm = 'aes-256-ctr',
-    password = 'd6F3Efeq';
+    password = 'U2FsdGVkX19EfjjBwydSZL509wKl5TEX+4f3vakEejU=';
 
 function encrypt(text){
     var cipher = crypto.createCipher(algorithm,password)

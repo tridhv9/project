@@ -3,9 +3,7 @@ var express=require("express")
 const bodyParser = require('body-parser')
 var router=express.Router()
 const passport = require('passport');
-var jwt = require('jwt-simple');
-var secret="very secret"
-var bcrypt=require("bcrypt")
+
 // parse application/x-www-form-urlencoded
 router.use(bodyParser.urlencoded({ extended: false }))
 
